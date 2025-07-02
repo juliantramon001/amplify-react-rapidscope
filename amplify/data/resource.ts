@@ -7,9 +7,24 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  SiteInspection: a
     .model({
-      content: a.string(),
+      siteName: a.string(),           // e.g., “Target 482”
+      location: a.string().optional(), // optional physical location
+      inspectorId: a.string(),        // from Cognito user info
+      photos: a.array(a.string()),    // store S3 keys or URLs
+      submittedAt: a.datetime(),
+
+      // Optional question groupings based on your form flow:
+      building1: a.string().optional(),
+      building2: a.string().optional(),
+      building3: a.string().optional(),
+      lot1: a.string().optional(),
+      lot2: a.string().optional(),
+      lot3: a.string().optional(),
+      land1: a.string().optional(),
+      land2: a.string().optional(),
+      land3: a.string().optional(),
     })
     .authorization((allow) => [allow.owner()]),
 });
@@ -19,13 +34,13 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "userPool", // Use User Pool for authenticated users
-    // API Key is used for a.allow.public() rules
+    defaultAuthorizationMode: "userPool",
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
     },
   },
 });
+
 
 /*== STEP 2 ===============================================================
 Go to your frontend source code. From your client-side code, generate a
