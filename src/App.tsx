@@ -9,27 +9,30 @@ function App() {
   const { user, signOut } = useAuthenticator();
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
 
+  // Live subscription + initial load
   useEffect(() => {
     const subscription = client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
+      next: ({ items }) => setTodos(items),
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
-  function refreshTodos() {
-    client.models.Todo.query().then((data) => setTodos(data));
+  async function refreshTodos() {
+    const { data } = await client.models.Todo.list();
+    setTodos(data);
   }
 
-  function createTodo() {
+  async function createTodo() {
     const content = window.prompt("Todo content");
     if (content) {
-      client.models.Todo.create({ content }).then(() => refreshTodos());
+      await client.models.Todo.create({ content });
+      refreshTodos(); // observeQuery will also catch this, acts as a fallback
     }
   }
 
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id }).then(() => refreshTodos());
+  async function deleteTodo(id: string) {
+    await client.models.Todo.delete({ id });
+    refreshTodos();
   }
 
   return (
@@ -41,7 +44,9 @@ function App() {
           <li
             key={todo.id}
             onClick={() => {
-              if (window.confirm("Are you sure you want to delete this todo?")) {
+              if (
+                window.confirm("Are you sure you want to delete this todo?")
+              ) {
                 deleteTodo(todo.id);
               }
             }}
