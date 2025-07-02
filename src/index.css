@@ -63,3 +63,29 @@ a {
   font-weight: 800;
   text-decoration: none;
 }
+.inspection-form {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 320px;
+}
+
+.progress {
+  font-weight: bold;
+}
+
+.step label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
