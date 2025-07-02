@@ -14,6 +14,7 @@ const schema = a.schema({
       inspectorId: a.string(),        // from Cognito user info
       photos: a.array(a.string()),    // store S3 keys or URLs
       submittedAt: a.datetime(),
+      isDone: a.boolean(),
 
       // Optional question groupings based on your form flow:
       building1: a.string().optional(),
